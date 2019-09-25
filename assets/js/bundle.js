@@ -3,7 +3,12 @@
 
 module.exports = function () {
   return {
-    settings: {},
+    settings: {
+      sequencer: {
+        columns: 60,
+        rows: 7
+      }
+    },
     init: function init() {
       var self = this; // setup a polyphonic sampler
 
@@ -24,13 +29,13 @@ module.exports = function () {
       var noteNames = ['D', 'C', 'G', 'F#', 'E', 'C#', 'Bb4'];
       var sequence = [];
 
-      for (var i = 0; i < 60; i++) {
+      for (var i = 0; i < this.settings.sequencer.columns; i++) {
         sequence.push(i + 1);
       }
 
       var tss = document.querySelector('tone-step-sequencer');
-      tss.columns = 60;
-      tss.rows = 7;
+      tss.columns = this.settings.sequencer.columns;
+      tss.rows = this.settings.sequencer.rows;
       var loop = new Tone.Sequence(function (time, currentCol) {
         var column = document.querySelector('tone-step-sequencer').currentColumn;
         column.forEach(function (val, row) {
@@ -57,24 +62,42 @@ module.exports = function () {
       var toneContentStyle = document.querySelector('tone-content').shadowRoot.querySelector('style');
       toneContentStyle.remove();
       setTimeout(function () {
-        self.addRowClasses(tss);
+        self.addRowClasses();
       }, 0);
     },
     addRowClasses: function addRowClasses() {
+      var self = this;
       var sequencer = document.querySelector('tone-step-sequencer');
-      var rows = sequencer.shadowRoot.querySelectorAll('.column .row');
-      rows.forEach(function (row) {
-        var column = row.parentNode;
-        var rowIndex = Array.prototype.indexOf.call(column.children, row);
-
-        if (rowIndex == 6) {
-          row.setAttribute('row', '7');
-          row.addEventListener('mouseenter', function (event) {
-            event.target.classList.add('preview');
-            event.target.style.backgroundColor = 'rgba(210,217,173, .5)';
-          });
-        }
+      var columns = sequencer.shadowRoot.querySelectorAll('.column');
+      columns.forEach(function (column) {
+        var columnIndex = Array.prototype.indexOf.call(column.parentNode.children, column);
+        column.setAttribute('column', columnIndex);
+        var rows = column.querySelectorAll('.row');
+        rows.forEach(function (row) {
+          var rowIndex = Array.prototype.indexOf.call(column.children, row);
+          row.setAttribute('row', rowIndex);
+        });
       });
+      self.highlightInterval(6, 0, 2);
+      self.highlightInterval(5, 1, 4);
+    },
+    highlightInterval: function highlightInterval(rowIndex, startingColumn, interval) {
+      var sequencer = document.querySelector('tone-step-sequencer'); //let columns = sequencer.shadowRoot.querySelectorAll('[column="' + startingColumn + '"]');
+
+      var cells = sequencer.shadowRoot.querySelectorAll('[row="' + rowIndex + '"]'); //console.log(columns);
+
+      var startingIndex = startingColumn;
+
+      while (startingIndex > 0) {
+        //debugger;
+        var newVal = startingIndex - interval;
+        if (newVal > 0) startingIndex = newVal;else break;
+      }
+
+      for (var i = startingIndex; i < cells.length; i += interval) {
+        //cells[i].style.backgroundColor = 'black';
+        cells[i].classList.add('filled');
+      }
     },
     addEvents: function addEvents() {}
   };
