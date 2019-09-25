@@ -41,11 +41,19 @@ module.exports = function() {
 			tss.columns = this.settings.sequencer.columns;
 			tss.rows = this.settings.sequencer.rows;
 			
+			let sequencer = document.querySelector('tone-step-sequencer');
+			var keys = Object.keys(sequencer);
+			console.log(keys);
+			console.log(sequencer.values);
+			
 			var loop = new Tone.Sequence(function(time, currentCol) {
 				
 				var column = document.querySelector('tone-step-sequencer').currentColumn;
 				
 				column.forEach(function(val, row) {
+					
+					console.log(column);
+					
 					if (val) {
 						var vel = Math.random() * 0.5 + 0.5; // slightly randomized velocities
 						//keys.get(noteNames[i]).start(time, 0, '32n', 0, vel); // 32n: note length
@@ -105,13 +113,10 @@ module.exports = function() {
 		highlightInterval: function(rowIndex, startingColumn, interval) {
 			
 			let sequencer = document.querySelector('tone-step-sequencer');
-			//let columns = sequencer.shadowRoot.querySelectorAll('[column="' + startingColumn + '"]');
 			let cells = sequencer.shadowRoot.querySelectorAll('[row="' + rowIndex + '"]');
 			
-			//console.log(columns);
 			let startingIndex = startingColumn;
 			while (startingIndex > 0) {
-				//debugger;
 				let newVal = startingIndex - interval;
 				if (newVal > 0) startingIndex = newVal;
 				else break;
@@ -119,7 +124,7 @@ module.exports = function() {
 
 			for (let i = startingIndex; i < cells.length; i += interval) {
 				
-				//cells[i].style.backgroundColor = 'black';
+				sequencer.values[i][rowIndex] = true;
 				cells[i].classList.add('filled');
 			}
 		},
