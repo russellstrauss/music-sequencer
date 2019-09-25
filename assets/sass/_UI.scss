@@ -1,0 +1,95 @@
+.sequencer {
+	height: 100vh;
+	display: flex;
+	flex-direction: column;
+	
+	tone-transport {
+		height: 100px;
+	}
+	
+	tone-step-sequencer {
+		height: calc(100vh - 100px);
+		
+		.column {
+			border: 1px solid black;
+		}
+		
+		.row {
+			border: 1px solid black;
+		}
+	}
+}
+
+#legend {
+	width: 150px;
+	font-size: 12px;
+	position: absolute;
+	bottom: 20px;
+	left: 20px;
+	
+	.legend-title {
+		font-size: 18px;
+	}
+	
+	.backdrop {
+		border: 1px solid black;
+		background-color: rgba(255, 255, 255, .4);
+		padding: 5px;
+		margin-top: 5px;
+	}
+	
+	table {
+		width: 100%;
+		
+		thead {
+			
+			tr {
+				font-weight: bold;
+				
+				&.divider {
+					vertical-align: top;
+				}
+			}
+		}
+		
+		tr {
+			
+			&.divider {
+				height: 20lrlrpx;
+				vertical-align: bottom;
+			}
+			
+			td {
+				width: 50%;
+				
+				
+				&:last-of-type {
+					text-align: right;
+				}
+			}
+		}
+	}
+}
+
+#author {
+	position: absolute;
+	right: 20px;
+	top: 20px;
+	display: flex;
+	font-size: 12px;
+	display: none;
+	
+	.column {
+		
+		&.description {
+			text-align: right;
+			padding-right: 10px;
+		}
+		
+		#portrait {
+			display: flex;
+			border: 1px solid black;
+			width: 100px;
+		}
+	}
+}
