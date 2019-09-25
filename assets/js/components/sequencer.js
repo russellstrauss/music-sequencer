@@ -10,47 +10,52 @@ module.exports = function() {
 
 			let self = this;
 			
-			
-			
-			
-			//setup a polyphonic sampler
+			// setup a polyphonic sampler
 			var keys = new Tone.Players({
 				'A' : './audio/casio/A1.[mp3|ogg]',
 				'C#' : './audio/casio/Cs2.[mp3|ogg]',
 				'E' : './audio/casio/E2.[mp3|ogg]',
 				'F#' : './audio/casio/Fs2.[mp3|ogg]',
+				'G' : './audio/casio/G2.[mp3|ogg]',
+				'C' : './audio/casio/C2.[mp3|ogg]',
+				'Bb' : './audio/casio/As2.[mp3|ogg]',
 			}, {
 				'volume' : -10,
 				'fadeOut' : '64n',
 			}).toMaster();
+			var notes = ['D4', 'D4', 'D4', 'D4', 'D4', 'D4', 'Bb2'];
+			const synth = new Tone.FMSynth().toMaster();
 
-			//the notes
-			var noteNames = ['F#', 'E', 'C#', 'A'];
+			var noteNames = ['D', 'C', 'G', 'F#', 'E', 'C#', 'Bb4'];
 			
 			let sequence = [];
 			for (let i = 0; i < 60; i++) {
 				sequence.push(i+1);
 			}
 			
-			console.log(sequence);
-			var loop = new Tone.Sequence(function(time, col) {
+			let tss = document.querySelector('tone-step-sequencer');
+			
+			tss.columns = 60;
+			tss.rows = 7;
+			
+			var loop = new Tone.Sequence(function(time, currentCol) {
 				
 				var column = document.querySelector('tone-step-sequencer').currentColumn;
 				
-				column.forEach(function(val, i) {
-					
-					if (val){
+				column.forEach(function(val, row) {
+					if (val) {
 						var vel = Math.random() * 0.5 + 0.5; // slightly randomized velocities
-						keys.get(noteNames[i]).start(time, 0, '32n', 0, vel);
+						//keys.get(noteNames[i]).start(time, 0, '32n', 0, vel); // 32n: note length
+						synth.triggerAttackRelease(notes[row], '32n');
 					}
 				});
 				
-				Tone.Draw.schedule(function() { //set the columne on the correct draw frame
-					document.querySelector('tone-step-sequencer').setAttribute('highlight', col);
+				Tone.Draw.schedule(function() { //set the column on the correct draw frame
+					document.querySelector('tone-step-sequencer').setAttribute('highlight', currentCol);
 				}, time);
-			}, sequence, '16n').start(0);
+				
+			}, sequence, '16n').start(0); // sequence speed
 
-			//bind the interface
 			document.querySelector('tone-transport').bind(Tone.Transport);
 
 			Tone.Transport.on('stop', () => {
@@ -58,6 +63,40 @@ module.exports = function() {
 					document.querySelector('tone-step-sequencer').setAttribute('highlight', '-1');
 				}, 100);
 			});
+			
+			// Removed scoped custom styles
+			let toneContentStyle = document.querySelector('tone-content').shadowRoot.querySelector('style');
+			toneContentStyle.remove();
+			
+			setTimeout(function() {
+				
+				self.addRowClasses(tss);
+			}, 0);
+		},
+		
+		addRowClasses: function() {
+			
+			let sequencer = document.querySelector('tone-step-sequencer');
+			let rows = sequencer.shadowRoot.querySelectorAll('.column .row');
+
+			rows.forEach(function(row) {
+				
+				var column = row.parentNode;
+				var rowIndex = Array.prototype.indexOf.call(column.children, row);
+				
+				if (rowIndex == 6) {
+					row.setAttribute('row', '7');
+					
+					row.addEventListener('mouseenter', function(event) {
+						event.target.classList.add('preview');
+						event.target.style.backgroundColor = 'rgba(210,217,173, .5)';
+					});
+				}
+			});
+		},
+		
+		addEvents: function() {
+			
 		}
 	}
 }
