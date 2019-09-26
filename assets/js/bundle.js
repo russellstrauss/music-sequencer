@@ -26,26 +26,8 @@ module.exports = function () {
     },
     init: function init() {
       var self = this;
-      self.addEvents(); // setup a polyphonic sampler
-
-      var keys = new Tone.Players({
-        'A': './audio/casio/A1.[mp3|ogg]',
-        'C#': './audio/casio/Cs2.[mp3|ogg]',
-        'E': './audio/casio/E2.[mp3|ogg]',
-        'F#': './audio/casio/Fs2.[mp3|ogg]',
-        'G': './audio/casio/G2.[mp3|ogg]',
-        'C': './audio/casio/C2.[mp3|ogg]',
-        'Bb': './audio/casio/As2.[mp3|ogg]'
-      }, {
-        'volume': -10,
-        'fadeOut': '64n'
-      }).toMaster();
-      var majorScale = ['587.330', '440', '293.665', '246.942', '164.814', '97.999', '65.406']; // [D, A, D, B, E, G, C]
-
-      var Cmajor = ['C4', 'D4', 'E4', 'F4', 'G4', 'A4', 'B4', 'C5'];
-      var minorScale = [];
-      self.setScale(parseInt(input.value), notes); //const synth = new Tone.FMSynth().toMaster();
-
+      self.addEvents();
+      self.setScale(parseInt(input.value), notes);
       var instruments = [];
       instruments.push({
         synth: new Tone.PolySynth(7, Tone.Synth).toMaster(),
@@ -110,22 +92,12 @@ module.exports = function () {
         }).toMaster(),
         volume: 0.1
       });
-      var synth = new Tone.Synth({
-        "oscillator": {
-          "type": "fmtriangle",
-          "harmonicity": 1,
-          "modulationType": "square",
-          "modulationIndex": 4
-        },
-        "envelope": {
-          "attackCurve": "exponential",
-          "attack": 0.025,
-          "decay": 0.2,
-          "sustain": 0.2,
-          "release": 0.7
-        },
-        "portamento": 0.05
-      }).toMaster();
+      var drums = new Tone.Sampler({
+        D4: "../assets/audio/snare.[mp3|ogg]",
+        C3: "../assets/audio/kick.[mp3|ogg]",
+        G3: "../assets/audio/hh.[mp3|ogg]",
+        A3: "../assets/audio/hho.[mp3|ogg]"
+      });
       var sequence = [];
 
       for (var i = 0; i < this.settings.sequencer.columns; i++) {
@@ -195,6 +167,14 @@ module.exports = function () {
       self.setInterval(5, 1, 3);
       self.setInterval(6, 0, 2);
     },
+    randomize: function randomize() {
+      var intervals = [2, 3, 4, 5, 6, 10, 12];
+      intervals = utils.shuffleArray(intervals);
+
+      for (var i = 0; i < this.settings.sequencer.rows; i++) {
+        this.setInterval(i, this.settings.sequencer.rows - i, intervals[i]);
+      }
+    },
     setInterval: function setInterval(rowIndex, startingColumn, interval) {
       var sequencer = document.querySelector('tone-step-sequencer');
       var cells = sequencer.shadowRoot.querySelectorAll('[row="' + rowIndex + '"]');
@@ -208,17 +188,32 @@ module.exports = function () {
       for (var i = startingIndex; i < cells.length; i += interval) {
         sequencer.values[i][rowIndex] = true; // off tempo bug?
 
-        cells[i].classList.add('filled'); //cells[i].style.backgroundColor = this.settings.rowColors[rowIndex];
+        cells[i].classList.add('filled');
       }
+    },
+    clearAllNotes: function clearAllNotes() {
+      var sequencer = document.querySelector('tone-step-sequencer');
+      var columns = sequencer.shadowRoot.querySelectorAll('.column');
+      columns.forEach(function (column, i) {
+        var rows = column.querySelectorAll('.row');
+        rows.forEach(function (row, j) {
+          sequencer.values[i][j] = false;
+          row.classList.remove('filled');
+        });
+      });
     },
     addEvents: function addEvents() {
       var self = this;
       dropdown.addEventListener('change', function (event) {
         self.setScale(parseInt(input.value), scales[event.target.value]);
+        dropdown.blur();
       });
       input.addEventListener('change', function (event) {
-        console.log(event.target.value);
         self.setScale(parseInt(event.target.value), scales[dropdown.value]);
+      });
+      document.querySelector('#randomize').addEventListener('click', function () {
+        self.clearAllNotes();
+        self.randomize();
       });
     },
     setScale: function setScale(startingNote, scale) {
@@ -230,9 +225,15 @@ module.exports = function () {
 
       notes = newScale;
     },
-    setStyles: function setStyles() {// let sequencer = document.querySelector('tone-step-sequencer');
-      // let style = '<style type="text/css"> * { border: 1px solid red !important;} </style>'
-      // sequencer.shadowRoot.style = style;
+    setStyles: function setStyles() {
+      var toneTransport = document.querySelector('tone-transport');
+      var toneSlider = toneTransport.shadowRoot.querySelector('tone-slider');
+      toneSlider.setAttribute('max', 120);
+      var bpm = toneSlider.shadowRoot.querySelector('input');
+      var timer = toneTransport.shadowRoot.querySelector('#position');
+      bpm.style.color = 'white';
+      bpm.style.margin = '2px';
+      timer.style.color = 'black';
     }
   };
 };
@@ -329,6 +330,24 @@ var Utilities = require('./utils.js');
       secondsToMilliseconds: function secondsToMilliseconds(seconds) {
         return seconds * 1000;
       },
+      shuffleArray: function shuffleArray(array) {
+        var currentIndex = array.length,
+            temporaryValue,
+            randomIndex;
+
+        while (0 !== currentIndex) {
+          // While there remain elements to shuffle
+          randomIndex = Math.floor(Math.random() * currentIndex); // Pick a remaining element
+
+          currentIndex -= 1;
+          temporaryValue = array[currentIndex]; // And swap it with the current element.
+
+          array[currentIndex] = array[randomIndex];
+          array[randomIndex] = temporaryValue;
+        }
+
+        return array;
+      },
 
       /*
       * Purpose: This method allows you to temporarily disable an an element's transition so you can modify its proprties without having it animate those changing properties.
@@ -339,6 +358,11 @@ var Utilities = require('./utils.js');
       getTransitionDuration: function getTransitionDuration(element) {
         var $element = $(element);
         return utils.secondsToMilliseconds(parseFloat(getComputedStyle($element[0])['transitionDuration']));
+      },
+      randomInt: function randomInt(min, max) {
+        min = Math.ceil(min);
+        max = Math.floor(max);
+        return Math.floor(Math.random() * (max - min + 1)) + min;
       },
       isInteger: function isInteger(number) {
         return number % 1 === 0;

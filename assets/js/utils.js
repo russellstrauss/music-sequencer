@@ -92,6 +92,25 @@
 				return seconds * 1000;
 			},
 			
+			shuffleArray: function(array) {
+				
+				var currentIndex = array.length, temporaryValue, randomIndex;
+				
+				while (0 !== currentIndex) { // While there remain elements to shuffle
+
+					
+					randomIndex = Math.floor(Math.random() * currentIndex); // Pick a remaining element
+					currentIndex -= 1;
+
+					
+					temporaryValue = array[currentIndex]; // And swap it with the current element.
+					array[currentIndex] = array[randomIndex];
+					array[randomIndex] = temporaryValue;
+				}
+
+				return array;
+			},
+			
 			/*
 			* Purpose: This method allows you to temporarily disable an an element's transition so you can modify its proprties without having it animate those changing properties.
 			* Params:
@@ -101,6 +120,12 @@
 			getTransitionDuration: function(element) {
 				var $element = $(element);
 				return utils.secondsToMilliseconds(parseFloat(getComputedStyle($element[0])['transitionDuration']));
+			},
+			
+			randomInt: function(min, max) {
+				min = Math.ceil(min);
+				max = Math.floor(max);
+				return Math.floor(Math.random() * (max - min + 1)) + min;
 			},
 			
 			isInteger: function(number) {

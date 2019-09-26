@@ -1,44 +1,139 @@
+$toneSelected: rgba(#E8732E, .75);
+$background: #666;
+$borders: #505050;
+
+
 body {
-	background-color: #ddd;
+	background-color: $borders;
+	--color-light-gray: #{$background} !important;
+	color: white;
+}
+
+input {
+	color: white;
 }
 
 .selectors {
 	height: 60px;
 	display: flex;
 	justify-content: center;
+	background-color: $background;
+	
+	@include mobile-only {
+		height: 120px;
+		flex-direction: column;
+	}
+	
+	button {
+		border: 1px solid;
+		overflow: hidden;
+		position: relative;
+		cursor: pointer;
+		position: relative;
+		text-decoration: none;
+		padding: 10px;
+		background-color: transparent;
+		color: white;
+		outline: none;
+		font-size: 16px;
+		
+		&:hover { text-decoration: none; }	
+
+		span {
+			z-index: 20;
+		}
+
+		&:after {
+			background: #fff;
+			content: "";
+			height: 155px;
+			left: -75px;
+			opacity: .2;
+			position: absolute;
+			top: -50px;
+			transform: rotate(35deg);
+			transition: all 550ms cubic-bezier(0.19, 1, 0.22, 1);
+			width: 50px;
+			z-index: 10;
+		}
+		
+		&:hover {
+	
+			&:after {
+				left: 120%;
+				transition: all 550ms cubic-bezier(0.19, 1, 0.22, 1);
+			}
+		}
+	}
 	
 	.form-group {
+		display: flex;
+		align-items: center;
 		margin: 0 10px;
 		
+		&:first-child {
+			select {
+				@include mobile-only {
+					margin: 0 0 10px 0;
+				}
+			}
+		}
+		
+		@include mobile-only {
+			display: flex;
+			justify-content: space-between;
+			align-items: center;
+		}
+		
 		label {
-			font-size: 22px;
+			font-size: 18px;
 			margin-right: 10px;
+			
+			@include mobile-only {
+				font-size: 16px;
+			}
 		}
 		
 		select {
 			margin: 5px auto;
 			padding: 10px;
-			background-color: none;
-			font-size: 22px;
+			background-color: white;
+			border: 0;
+			font-size: 16px;
 			text-align: center;
-			width: 300px;
+			width: 150px;
+			margin: 10px;
+			text-align: right;
+			
+			@include mobile-only {
+				font-size: 16px;
+				width: 200px;
+				margin: 0;
+			}
 		}
 	}
 }
-
 
 .sequencer {
 	height: 100vh;
 	display: flex;
 	flex-direction: column;
 	
+	tone-content {
+		--color-teal: #{$toneSelected};
+	}
+	
 	tone-transport {
 		height: 100px;
-		margin-bottom: 19px;
+		margin-bottom: 20px;
 	}
 	
 	tone-step-sequencer {
 		height: calc(100vh - 160px);
+		
+		@include mobile-only {
+			height: calc(100vh - 220px);
+		}
 	}
 }
 

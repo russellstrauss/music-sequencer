@@ -41,26 +41,8 @@ module.exports = function() {
 			let self = this;
 			self.addEvents();
 			
-			// setup a polyphonic sampler
-			var keys = new Tone.Players({
-				'A' : './audio/casio/A1.[mp3|ogg]',
-				'C#' : './audio/casio/Cs2.[mp3|ogg]',
-				'E' : './audio/casio/E2.[mp3|ogg]',
-				'F#' : './audio/casio/Fs2.[mp3|ogg]',
-				'G' : './audio/casio/G2.[mp3|ogg]',
-				'C' : './audio/casio/C2.[mp3|ogg]',
-				'Bb' : './audio/casio/As2.[mp3|ogg]',
-			}, {
-				'volume' : -10,
-				'fadeOut' : '64n',
-			}).toMaster();
-			var majorScale = ['587.330', '440', '293.665', '246.942', '164.814', '97.999', '65.406']; // [D, A, D, B, E, G, C]
-			var Cmajor = ['C4','D4','E4','F4','G4','A4','B4','C5'];
-			var minorScale = [];
-			
 			self.setScale(parseInt(input.value), notes);
 			
-			//const synth = new Tone.FMSynth().toMaster();
 			var instruments = [];
 			instruments.push({synth: new Tone.PolySynth(7, Tone.Synth).toMaster(), volume: 0.9});
 			instruments.push({synth: new Tone.PolySynth(7, function () {
@@ -113,23 +95,14 @@ module.exports = function() {
 						}
 						});
 			}).toMaster(), volume: 0.1});
-
-			var synth = new Tone.Synth({
-				"oscillator" : {
-					"type" : "fmtriangle",
-					"harmonicity" : 1,
-					"modulationType" : "square",
-					"modulationIndex": 4
-				},
-				"envelope" : {
-					"attackCurve" : "exponential",
-					"attack" : 0.025,
-					"decay" : 0.2,
-					"sustain" : 0.2,
-					"release" : 0.7,
-				},
-				"portamento" : 0.05
-			}).toMaster();		
+			
+			let drums = new Tone.Sampler({
+				D4: "../assets/audio/snare.[mp3|ogg]",
+				C3: "../assets/audio/kick.[mp3|ogg]",
+				G3: "../assets/audio/hh.[mp3|ogg]",
+				A3: "../assets/audio/hho.[mp3|ogg]"
+			});
+	
 			let sequence = [];
 			for (let i = 0; i < this.settings.sequencer.columns; i++) {
 				sequence.push(i+1);
@@ -190,7 +163,6 @@ module.exports = function() {
 		
 		addRowColumnIndices: function() {
 			
-			
 			let self = this;
 			let sequencer = document.querySelector('tone-step-sequencer');
 			let columns = sequencer.shadowRoot.querySelectorAll('.column');
@@ -217,6 +189,17 @@ module.exports = function() {
 			self.setInterval(6, 0, 2);
 		},
 		
+		randomize: function() {
+			
+			let intervals = [2, 3, 4, 5, 6, 10, 12];
+			intervals = utils.shuffleArray(intervals);
+			
+			for (let i = 0; i < this.settings.sequencer.rows; i++) {
+				
+				this.setInterval(i, this.settings.sequencer.rows-i, intervals[i]);
+			}
+		},
+		
 		setInterval: function(rowIndex, startingColumn, interval) {
 			
 			let sequencer = document.querySelector('tone-step-sequencer');
@@ -233,8 +216,23 @@ module.exports = function() {
 				
 				sequencer.values[i][rowIndex] = true; // off tempo bug?
 				cells[i].classList.add('filled');
-				//cells[i].style.backgroundColor = this.settings.rowColors[rowIndex];
 			}
+		},
+		
+		clearAllNotes: function() {
+			
+			let sequencer = document.querySelector('tone-step-sequencer');
+			let columns = sequencer.shadowRoot.querySelectorAll('.column');
+			
+			columns.forEach(function(column, i) {
+				
+				let rows = column.querySelectorAll('.row');
+				
+				rows.forEach(function(row, j) {
+					sequencer.values[i][j] = false;
+					row.classList.remove('filled');
+				});
+			});
 		},
 		
 		addEvents: function() {
@@ -243,11 +241,16 @@ module.exports = function() {
 			
 			dropdown.addEventListener('change', function(event) {
 				self.setScale(parseInt(input.value), scales[event.target.value]);
+				dropdown.blur();
 			});
 			
 			input.addEventListener('change', function(event) {
-				console.log(event.target.value);
 				self.setScale(parseInt(event.target.value), scales[dropdown.value]);
+			});
+			
+			document.querySelector('#randomize').addEventListener('click', function() {
+				self.clearAllNotes(); 
+				self.randomize();
 			});
 		},
 		
@@ -262,9 +265,15 @@ module.exports = function() {
 		
 		setStyles: function() {
 			
-			// let sequencer = document.querySelector('tone-step-sequencer');
-			// let style = '<style type="text/css"> * { border: 1px solid red !important;} </style>'
-			// sequencer.shadowRoot.style = style;
+			let toneTransport = document.querySelector('tone-transport');
+			let toneSlider = toneTransport.shadowRoot.querySelector('tone-slider');
+			toneSlider.setAttribute('max', 120);
+			let bpm = toneSlider.shadowRoot.querySelector('input');
+			let timer = toneTransport.shadowRoot.querySelector('#position');
+			
+			bpm.style.color = 'white';
+			bpm.style.margin = '2px';
+			timer.style.color = 'black';
 		}
 	}
 }
