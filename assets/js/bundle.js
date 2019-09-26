@@ -2,14 +2,19 @@
 "use strict";
 
 module.exports = function () {
+  var input = document.querySelector('#startingNote');
+  var dropdown = document.querySelector('#scale');
   var scales = {
     MAJOR: [12, 11, 9, 7, 5, 4, 2, 0],
+    PENTATONIC: [12, 9, 7, 4, 2, 0],
     MINOR: [12, 11, 9, 7, 5, 3, 2, 0],
     BLUES: [12, 10, 7, 6, 5, 3, 0],
     FLAMENCO: [12, 11, 7, 6, 5, 3, 0],
-    UKRAINIAN_DORIAN: [12, 10, 9, 7, 6, 3, 2, 0]
+    UKRAINIAN_DORIAN: [12, 10, 9, 7, 6, 3, 2, 0],
+    AUGMENTED: [12, 11, 8, 7, 4, 3, 0],
+    WHOLE_TONE: [12, 10, 8, 6, 4, 2, 0]
   };
-  var notes = scales['MAJOR'];
+  var notes = scales[dropdown.value];
   var MIDI_NUM_NAMES = ['C_1', 'C#_1', 'D_1', 'D#_1', 'E_1', 'F_1', 'F#_1', 'G_1', 'G#_1', 'A_1', 'A#_1', 'B_1', 'C0', 'C#0', 'D0', 'D#0', 'E0', 'F0', 'F#0', 'G0', 'G#0', 'A0', 'A#0', 'B0', 'C1', 'C#1', 'D1', 'D#1', 'E1', 'F1', 'F#1', 'G1', 'G#1', 'A1', 'A#1', 'B1', 'C2', 'C#2', 'D2', 'D#2', 'E2', 'F2', 'F#2', 'G2', 'G#2', 'A2', 'A#2', 'B2', 'C3', 'C#3', 'D3', 'D#3', 'E3', 'F3', 'F#3', 'G3', 'G#3', 'A3', 'A#3', 'B3', 'C4', 'C#4', 'D4', 'D#4', 'E4', 'F4', 'F#4', 'G4', 'G#4', 'A4', 'A#4', 'B4', 'C5', 'C#5', 'D5', 'D#5', 'E5', 'F5', 'F#5', 'G5', 'G#5', 'A5', 'A#5', 'B5', 'C6', 'C#6', 'D6', 'D#6', 'E6', 'F6', 'F#6', 'G6', 'G#6', 'A6', 'A#6', 'B6', 'C7', 'C#7', 'D7', 'D#7', 'E7', 'F7', 'F#7', 'G7', 'G#7', 'A7', 'A#7', 'B7', 'C8', 'C#8', 'D8', 'D#8', 'E8', 'F8', 'F#8', 'G8', 'G#8', 'A8', 'A#8', 'B8', 'C9', 'C#9', 'D9', 'D#9', 'E9', 'F9', 'F#9', 'G9'];
   return {
     settings: {
@@ -39,7 +44,6 @@ module.exports = function () {
 
       var Cmajor = ['C4', 'D4', 'E4', 'F4', 'G4', 'A4', 'B4', 'C5'];
       var minorScale = [];
-      var input = document.querySelector('#startingNote');
       self.setScale(parseInt(input.value), notes); //const synth = new Tone.FMSynth().toMaster();
 
       var instruments = [];
@@ -209,11 +213,9 @@ module.exports = function () {
     },
     addEvents: function addEvents() {
       var self = this;
-      var dropdown = document.querySelector('#scale');
       dropdown.addEventListener('change', function (event) {
-        self.setScale(50, scales[event.target.value]);
+        self.setScale(parseInt(input.value), scales[event.target.value]);
       });
-      var input = document.querySelector('#startingNote');
       input.addEventListener('change', function (event) {
         console.log(event.target.value);
         self.setScale(parseInt(event.target.value), scales[dropdown.value]);

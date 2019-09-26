@@ -2,38 +2,43 @@ body {
 	background-color: #ddd;
 }
 
-select {
-	margin: 5px auto;
-	padding: 10px;
-	background-color: none;
-	font-size: 22px;
-	text-align: center;
-	width: 300px;
+.selectors {
+	height: 60px;
+	display: flex;
+	justify-content: center;
+	
+	.form-group {
+		margin: 0 10px;
+		
+		label {
+			font-size: 22px;
+			margin-right: 10px;
+		}
+		
+		select {
+			margin: 5px auto;
+			padding: 10px;
+			background-color: none;
+			font-size: 22px;
+			text-align: center;
+			width: 300px;
+		}
+	}
 }
+
 
 .sequencer {
 	height: 100vh;
 	display: flex;
 	flex-direction: column;
 	
-	tone-content {
-		
-		#content {
-			width: 100% !important;
-			max-width: 9001px;
-		}
-	}
-	
 	tone-transport {
 		height: 100px;
+		margin-bottom: 19px;
 	}
 	
 	tone-step-sequencer {
-		height: calc(100vh - 100px);
-	}
-	
-	.row, .row.filled {
-		background-color: red !important;
+		height: calc(100vh - 160px);
 	}
 }
 

@@ -27,23 +27,36 @@
 		</div>
 	</div>
 	
+	<div class="selectors">
+		
+		<div class="form-group">
+			<label for="scale">Scale</label>
+			<select name="scale" id="scale">
+				<option value="PENTATONIC">Pentatonic</option>
+				<option value="MAJOR">Major</option>
+				<option value="MINOR">Minor</option>
+				<option value="AUGMENTED">Augmented</option>
+				<option value="WHOLE_TONE">Whole Tone</option>
+				<option value="BLUES">Blues</option>
+				<option value="FLAMENCO">Flamenco</option>
+				<option value="UKRAINIAN_DORIAN">Ukrainian Dorian</option>
+			</select>
+		</div>
+		
+		<div class="form-group">
+			<label for="startingNote">Scale Pitch</label>
+			<select name="startingNote" id="startingNote">
+				<option value="60">Middle</option>
+				<option value="70">Very High</option>
+				<option value="65">High</option>
+				<option value="50">Low</option>
+				<option value="45">Extra Low</option>
+			</select>
+		</div>
+	</div>
+	
 	<div class="sequencer">
 		
-		<select name="startingNote" id="startingNote">
-			<option value="50">Low</option>
-			<option value="70">Very High</option>
-			<option value="65">High</option>
-			<option value="60">Middle</option>
-			<option value="45">Extra Low</option>
-		</select>
-		
-		<select name="scale" id="scale">
-			<option value="MAJOR">Major</option>
-			<option value="MINOR">Minor</option>
-			<option value="BLUES">Blues</option>
-			<option value="FLAMENCO">Flamenco</option>
-			<option value="UKRAINIAN_DORIAN">UKRAINIAN_DORIAN</option>
-		</select>
 		
 		<tone-content>
 			<tone-transport></tone-transport>

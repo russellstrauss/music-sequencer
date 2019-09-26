@@ -1,13 +1,19 @@
 module.exports = function() {
 	
+	let input = document.querySelector('#startingNote');
+	let dropdown = document.querySelector('#scale');
+	
 	var scales = {
 		MAJOR: 				[12, 11, 9, 7, 5, 4, 2, 0],
+		PENTATONIC:			[12, 9, 7, 4, 2, 0],
 		MINOR: 				[12, 11, 9, 7, 5, 3, 2, 0],
 		BLUES: 				[12, 10, 7, 6, 5, 3, 0],
 		FLAMENCO: 			[12, 11, 7, 6, 5, 3, 0],
-		UKRAINIAN_DORIAN: 	[12, 10, 9, 7, 6, 3, 2, 0]
+		UKRAINIAN_DORIAN: 	[12, 10, 9, 7, 6, 3, 2, 0],
+		AUGMENTED: 			[12, 11, 8, 7, 4, 3, 0],
+		WHOLE_TONE: 		[12, 10, 8, 6, 4, 2, 0]
 	}
-	var notes = scales['MAJOR'];
+	var notes = scales[dropdown.value];
 	var MIDI_NUM_NAMES = ['C_1', 'C#_1', 'D_1', 'D#_1', 'E_1', 'F_1', 'F#_1', 'G_1', 'G#_1', 'A_1', 'A#_1', 'B_1',
                 'C0', 'C#0', 'D0', 'D#0', 'E0', 'F0', 'F#0', 'G0', 'G#0', 'A0', 'A#0', 'B0',
                 'C1', 'C#1', 'D1', 'D#1', 'E1', 'F1', 'F#1', 'G1', 'G#1', 'A1', 'A#1', 'B1',
@@ -52,7 +58,6 @@ module.exports = function() {
 			var Cmajor = ['C4','D4','E4','F4','G4','A4','B4','C5'];
 			var minorScale = [];
 			
-			let input = document.querySelector('#startingNote');
 			self.setScale(parseInt(input.value), notes);
 			
 			//const synth = new Tone.FMSynth().toMaster();
@@ -236,12 +241,10 @@ module.exports = function() {
 			
 			let self = this;
 			
-			let dropdown = document.querySelector('#scale');
 			dropdown.addEventListener('change', function(event) {
-				self.setScale(50, scales[event.target.value]);
+				self.setScale(parseInt(input.value), scales[event.target.value]);
 			});
 			
-			let input = document.querySelector('#startingNote');
 			input.addEventListener('change', function(event) {
 				console.log(event.target.value);
 				self.setScale(parseInt(event.target.value), scales[dropdown.value]);
