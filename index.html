@@ -11,34 +11,6 @@
 </head>
 <body>
 	
-	<!-- <div id="legend">
-		<span class="legend-title">Controls</span>
-		<div class="backdrop">
-			<table>
-				<thead>
-					<tr class="divider">
-						<td>Function</td>
-						<td>Key</td>
-					</tr>
-				</thead>
-				<tbody>
-					<tr>
-						<td>Rotate</td>
-						<td>left click</td>
-					</tr>
-					<tr>
-						<td>Pan</td>
-						<td>right click</td>
-					</tr>
-					<tr>
-						<td>Zoom</td>
-						<td>scroll</td>
-					</tr>
-				</tbody>
-			</table>
-		</div>
-	</div> -->
-	
 	<div id="author">
 		<div class="column description">
 			Code Authors:<br>
@@ -55,7 +27,24 @@
 		</div>
 	</div>
 	
-	<div class="sequencer">	
+	<div class="sequencer">
+		
+		<select name="startingNote" id="startingNote">
+			<option value="50">Low</option>
+			<option value="70">Very High</option>
+			<option value="65">High</option>
+			<option value="60">Middle</option>
+			<option value="45">Extra Low</option>
+		</select>
+		
+		<select name="scale" id="scale">
+			<option value="MAJOR">Major</option>
+			<option value="MINOR">Minor</option>
+			<option value="BLUES">Blues</option>
+			<option value="FLAMENCO">Flamenco</option>
+			<option value="UKRAINIAN_DORIAN">UKRAINIAN_DORIAN</option>
+		</select>
+		
 		<tone-content>
 			<tone-transport></tone-transport>
 			<tone-step-sequencer></tone-step-sequencer>

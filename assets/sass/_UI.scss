@@ -1,3 +1,16 @@
+body {
+	background-color: #ddd;
+}
+
+select {
+	margin: 5px auto;
+	padding: 10px;
+	background-color: none;
+	font-size: 22px;
+	text-align: center;
+	width: 300px;
+}
+
 .sequencer {
 	height: 100vh;
 	display: flex;
@@ -17,19 +30,10 @@
 	
 	tone-step-sequencer {
 		height: calc(100vh - 100px);
-		
-		.column {
-			border: 1px solid black;
-		}
-		
-		
 	}
-	.row {
-		border: 1px solid black;
-		
-		&.preview {
-			background-color: rgba(210,217,173, .5);
-		}
+	
+	.row, .row.filled {
+		background-color: red !important;
 	}
 }
 
