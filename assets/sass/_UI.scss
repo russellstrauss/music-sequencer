@@ -1,7 +1,6 @@
-$toneSelected: rgba(#E8732E, .75);
+$toneSelected: rgba(#FFD114, .7);
 $background: #666;
-$borders: #505050;
-
+$borders: #111;
 
 body {
 	background-color: $borders;
@@ -25,7 +24,7 @@ input {
 	}
 	
 	button {
-		border: 1px solid;
+		border: 2px solid black;
 		overflow: hidden;
 		position: relative;
 		cursor: pointer;
@@ -88,6 +87,7 @@ input {
 		label {
 			font-size: 18px;
 			margin-right: 10px;
+			color: white;
 			
 			@include mobile-only {
 				font-size: 16px;
@@ -97,18 +97,25 @@ input {
 		select {
 			margin: 5px auto;
 			padding: 10px;
-			background-color: white;
+			background-color: transparent;
 			border: 0;
 			font-size: 16px;
 			text-align: center;
 			width: 150px;
 			margin: 10px;
 			text-align: right;
+			color: white;
+			border: 2px solid black;
+			outline: 0;
 			
 			@include mobile-only {
 				font-size: 16px;
 				width: 200px;
 				margin: 0;
+			}
+			
+			option {
+				color: black;
 			}
 		}
 	}
