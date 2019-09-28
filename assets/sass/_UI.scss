@@ -2,6 +2,9 @@ $toneSelected: #08CDFA;
 $background: #666;
 $borders: #111;
 
+$selectors-height-mobile: 180px;
+$tone-transport-height-mobile: 100px;
+
 body {
 	background-color: $borders;
 	--color-light-gray: #{$background} !important;
@@ -19,7 +22,7 @@ input {
 	background-color: $background;
 	
 	@include mobile-only {
-		height: 120px;
+		height: $selectors-height-mobile;
 		flex-direction: column;
 	}
 	
@@ -35,6 +38,11 @@ input {
 		color: white;
 		outline: none;
 		font-size: 16px;
+		
+		@include mobile-only {
+			width: 100%;
+			margin-top: 10px;
+		}
 		
 		&:hover { text-decoration: none; }	
 
@@ -139,7 +147,7 @@ input {
 		height: calc(100vh - 160px);
 		
 		@include mobile-only {
-			height: calc(100vh - 220px);
+			height: calc(100vh - #{$selectors-height-mobile + $tone-transport-height-mobile});
 		}
 	}
 }
